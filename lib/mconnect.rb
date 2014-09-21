@@ -7,6 +7,9 @@ require 'csv'
 
 require 'pry'
 require 'mconnect/helpers'
+require 'mconnect/loaders'
+require 'mconnect/worker'
+require 'mconnect/generator'
 
 module Mconnect
   class CLI < Thor
@@ -49,15 +52,18 @@ module Mconnect
 
     desc "get", "gets endpoint and saves to CSV"
     option :e, required: true
-    option :d, required: true
+    option :o, required: true
     def get
       begin
-        parsed_endpoint = options[:e].split('/').last
+        filename  = "#{options[:o]}"
+        endpoint  = options[:e]
+        worker    = Mconnect::Worker.new access_token, endpoint
+        generator = Mconnect::Generator.new(filename, endpoint)
 
-        get_content options[:e]
-        save_csv @content, "#{options[:d]}/#{parsed_endpoint}.csv", parsed_endpoint
+        generator.content = worker.get_content
+        generator.save_csv
       rescue
-        puts "Missing a configuration file. Please run 'status' to check on them."
+        puts "Something went wrong. Please run 'status' to check on the config files. Run 'config' then 'auth' if all else fails."
       end
     end
 
@@ -68,120 +74,8 @@ module Mconnect
     end
 
     no_commands {
-      def oauth_options
-        begin
-          load_yaml '/tmp/mconnect.yml'
-        rescue
-          "missing initial config file"
-        end
-      end
-
-      def access_token
-        begin
-          load_yaml '/tmp/mconnect_authorization.yml'
-        rescue
-          "missing authorization file"
-        end
-      end
-
-      def load_yaml filename
-        YAML.load_file(filename)
-      end
-
-      def save_to_yaml hash, filename
-        File.open("/tmp/#{filename}", "w") do |file|
-          file.write hash.to_yaml
-        end
-      end
-
-      def write_option text, key, hash
-        puts text
-        input_value = $stdin.gets.strip
-        hash[key] = input_value
-      end
-
-      def get_content endpoint, page_number = 1
-        @content ||= []
-
-        url = "/#{endpoint}?page=#{page_number}"
-
-        @content << JSON.parse(access_token.get(url, 'x-li-format' => 'json').body)
-        @content.flatten!
-
-        if @content.count < page_number * 1000
-          return
-        else
-          puts "Getting page #{page_number}.."
-          get_content endpoint, (page_number + 1)
-        end
-      end
-
-      def save_csv content, filename, endpoint_tail = ""
-        # teacher csv specific
-        if endpoint_tail == "teachers"
-          content.each do |hash|
-            hash.reject! do |k,v|
-              ["custom", "saml_name"].include? k
-            end
-          end
-        end
-
-        # students csv specific
-        if endpoint_tail == "students"
-          content.each do |hash|
-            hash.reject! do |k,v|
-              ["sections"].include? k
-            end
-          end
-        end
-
-        # standards csv specific
-        if endpoint_tail == "standards"
-          orig_content = content.dup
-          content      = []
-
-          orig_content.each do |hash|
-            content << hash['standards']
-          end
-
-          content.flatten!
-        end
-
-        # sections csv specific
-        if endpoint_tail == "sections"
-          orig_content = content.dup
-          content      = []
-
-          orig_content.each do |hash|
-            hash['teachers'].each do |t|
-              hash['students'].each do |s|
-                content << {
-                  "id"                 => hash['id'],
-                  "school_id"          => hash['school_id'],
-                  "name"               => hash['name'],
-                  "teacher_id"         => t['id'],
-                  "teacher_school_id"  => t['school_id'],
-                  "teacher_first_name" => t['first_name'],
-                  "teacher_last_name"  => t['last_name'],
-                  "teacher_custom"     => t['custom'],
-                  "student_id"         => s['id'],
-                  "student_first_name" => s['first_name'],
-                  "student_last_name"  => s['last_name'],
-                  "student_number"     => s['student_number'],
-                  "student_school_id"  => s['school_id'],
-                  "student_custom"     => s['custom']
-                }
-              end
-            end
-          end
-        end
-
-        CSV.open(filename, "w", write_headers: true, headers: content.first.keys) do |csv|
-          content.each do |hash|
-            csv << hash.values
-          end
-        end
-      end
+      include Helpers
+      include Loaders
     }
   end
 end

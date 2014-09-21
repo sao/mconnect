@@ -8,7 +8,7 @@ CLI to export endpoints from the MasteryConnect API to CSV
 
 ## Usage
 
-    $ mconnect get -e teachers -d ~/Desktop
+    $ mconnect get -e teachers -o ~/Desktop/teachers.csv
 
 ## Contributing
 
