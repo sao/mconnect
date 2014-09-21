@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'mconnect'
+
+Mconnect::CLI.start
