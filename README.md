@@ -1,6 +1,6 @@
 # Mconnect
 
-CLI to interface with the MasteryConnect API
+CLI to export endpoints from the MasteryConnect API to CSV
 
 ## Installation
 
