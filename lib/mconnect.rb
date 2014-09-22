@@ -50,17 +50,13 @@ module Mconnect
     option :e, required: true
     option :o, required: true
     def get
-      begin
-        filename  = "#{options[:o]}"
-        endpoint  = options[:e]
-        worker    = Mconnect::Worker.new access_token, endpoint
-        generator = Mconnect::Generator.new(filename, endpoint)
+      filename  = "#{options[:o]}"
+      endpoint  = options[:e]
+      worker    = Mconnect::Worker.new access_token, endpoint
+      generator = Mconnect::Generator.new(filename, endpoint)
 
-        generator.content = worker.get_content
-        generator.save_csv
-      rescue
-        puts "Something went wrong. Please run 'status' to check on the config files. Run 'config' then 'auth' if all else fails."
-      end
+      generator.content = worker.get_content
+      generator.save_csv
     end
 
     desc "status", "check status on configuration files"
