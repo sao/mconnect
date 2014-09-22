@@ -41,8 +41,8 @@ module Mconnect
       puts "\t#{request_token.authorize_url}"
       puts "When you sign in, copy and paste the oauth verifier here:"
       verifier = $stdin.gets.strip
-      authorization = request_token.get_access_token(:oauth_verifier => verifier)
 
+      authorization = request_token.get_access_token(:oauth_verifier => verifier)
       save_to_yaml authorization, 'mconnect_authorization.yml'
     end
 
