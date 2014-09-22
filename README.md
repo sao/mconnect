@@ -14,6 +14,11 @@ someone that runs across it, can benefit from it.
 
 ## Usage
 
+Running the gem without any arguments will display a list of commands that can
+be ran.
+
+    $ mconnect
+
 First things first, you need to setup a configuration file.
 
     $ mconnect config
