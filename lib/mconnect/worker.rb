@@ -11,11 +11,11 @@ module Mconnect
     def get_content page_number = 1
       url = "/api/#{@endpoint}?page=#{page_number}"
 
-      self.content << JSON.parse(@access_token.get(url, 'x-li-format' => 'json').body)
-      self.content.flatten!
+      content << JSON.parse(@access_token.get(url, 'x-li-format' => 'json').body)
+      content.flatten!
 
-      if self.content.count < page_number * 1000
-        return self.content
+      if content.count < page_number * 1000
+        return content
       else
         puts "Getting page #{page_number}.."
         get_content (page_number + 1)
