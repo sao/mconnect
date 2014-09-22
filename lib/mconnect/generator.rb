@@ -3,7 +3,8 @@ module Mconnect
     attr_accessor :content
     attr_reader   :filename, :endpoint
 
-    def initialize filename, endpoint
+    def initialize content, filename, endpoint
+      @content  = content
       @filename = filename
       @endpoint = endpoint
     end

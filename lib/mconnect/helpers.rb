@@ -5,7 +5,7 @@ module Mconnect
     end
 
     def save_to_yaml hash, filename
-      File.open("/tmp/#{filename}", "w") do |file|
+      File.open(filename, "w") do |file|
         file.write hash.to_yaml
       end
     end
