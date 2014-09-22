@@ -25,6 +25,7 @@ module Mconnect
 
     desc "auth", "authorize client and create authorization yaml (/tmp/mconnect_authorization.yml)"
     def auth
+      oauth_options  = load_yaml '/tmp/mconnect.yml'
       client_options = { :site => 'https://api.masteryconnect.com',
                          :authorize_path => '/oauth/authorize',
                          :request_token_path => '/oauth/request_token',
@@ -50,10 +51,11 @@ module Mconnect
     option :e, required: true
     option :o, required: true
     def get
-      filename  = "#{options[:o]}"
-      endpoint  = options[:e]
-      worker    = Mconnect::Worker.new access_token, endpoint
-      generator = Mconnect::Generator.new(filename, endpoint)
+      access_token = load_yaml '/tmp/mconnect_authorization.yml'
+      filename     = "#{options[:o]}"
+      endpoint     = options[:e]
+      worker       = Mconnect::Worker.new access_token, endpoint
+      generator    = Mconnect::Generator.new(filename, endpoint)
 
       generator.content = worker.get_content
       generator.save_csv
@@ -67,7 +69,6 @@ module Mconnect
 
     no_commands {
       include Helpers
-      include Loaders
     }
   end
 end
