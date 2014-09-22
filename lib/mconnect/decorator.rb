@@ -40,7 +40,6 @@ module Mconnect
               "teacher_school_id"  => t['school_id'],
               "teacher_first_name" => t['first_name'],
               "teacher_last_name"  => t['last_name'],
-
               "teacher_custom"     => t['custom'],
               "student_id"         => s['id'],
               "student_first_name" => s['first_name'],
