@@ -17,10 +17,6 @@ module Mconnect
     def config options = {}
       puts "Let's setup a configuration file.."
 
-      write_option 'What is the api host?', 'api_host', options
-      write_option 'What is the authorize path?', 'authorize_path', options
-      write_option 'What is the request token path?', 'request_token_path', options
-      write_option 'What is the access token path?', 'access_token_path', options
       write_option 'What is the consumer key?', 'consumer_key', options
       write_option 'What is the consumer secret?', 'consumer_secret', options
 
@@ -29,10 +25,10 @@ module Mconnect
 
     desc "auth", "authorize client and create authorization yaml (/tmp/mconnect_authorization.yml)"
     def auth
-      client_options = { :site => oauth_options['api_host'],
-                         :authorize_path => oauth_options['authorize_path'],
-                         :request_token_path => oauth_options['request_token_path'],
-                         :access_token_path => oauth_options['access_token_path'] }
+      client_options = { :site => 'https://api.masteryconnect.com',
+                         :authorize_path => '/oauth/authorize',
+                         :request_token_path => '/oauth/request_token',
+                         :access_token_path => '/oauth/access_token' }
 
       client = OAuth::Consumer.new(
         oauth_options['consumer_key'],
