@@ -5,10 +5,10 @@ require 'yaml'
 require 'json'
 require 'csv'
 
-require 'pry'
 require 'mconnect/helpers'
 require 'mconnect/loaders'
 require 'mconnect/worker'
+require 'mconnect/decorator'
 require 'mconnect/generator'
 
 module Mconnect
