@@ -36,10 +36,10 @@ into the input and the program completes, your authorization file has been gener
 
 You are now free to run the get method in order to get a specific API endpoint
 and export it to a CSV file. Use the '-e' to tell the program which endpoint you
-want to export and '-o' to tell it where you want the data to go. You can see an
+want to export and '-o' to tell it where you want the CSV to go. You can see an
 example below:
 
-    $ mconnect get -e teachers -o ~/Desktop/teachers.csv
+    $ mconnect get -e teachers -o ~/Desktop
 
 ## Contributing
 
