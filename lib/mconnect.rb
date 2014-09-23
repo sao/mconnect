@@ -44,11 +44,11 @@ module Mconnect
     option :e, required: true, desc: "which endpoint to export"
     option :o, required: true, desc: "destination to put CSV"
     def get
-      filename   = options[:o].to_s
+      directory  = options[:o].to_s
       endpoint   = options[:e].to_s
       authorizer = Mconnect::Authorizer.new
       worker     = Mconnect::Worker.new authorizer.access_token, endpoint
-      generator  = Mconnect::Generator.new(worker.content, filename, endpoint)
+      generator  = Mconnect::Generator.new(worker.content, directory, endpoint)
 
       generator.save_csv
     end
