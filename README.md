@@ -10,10 +10,7 @@ someone that runs across it, can benefit from it.
 
 ## Installation
 
-I have not put this gem on rubygems yet as it has no tests :( Will be up soon!
-This was a quick and dirty scripting project that I decided to turn into a gem.
-It was a personal decision and not that of the clients. Feel free to contribute
-if you use the MasteryConnect API and can benefit from this.
+    $ gem install mconnect
 
 ## Usage
 

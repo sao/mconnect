@@ -1,19 +1,11 @@
 module Mconnect
   module Helpers
-    def load_yaml filename
-      YAML.load_file(filename)
-    end
-
-    def save_to_yaml hash, filename
-      File.open(filename, "w") do |file|
-        file.write hash.to_yaml
+    def load_yaml data
+      if data.kind_of? Hash
+        YAML.load(data.to_yaml)
+      else
+        YAML.load_file(data)
       end
-    end
-
-    def write_option text, key, hash
-      puts text
-      input_value = $stdin.gets.strip
-      hash[key] = input_value
     end
   end
 end

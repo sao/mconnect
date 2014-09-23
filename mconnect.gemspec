@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Silas Sao"]
   spec.email         = ["silassao@gmail.com"]
   spec.summary       = "Gem for the MasteryConnect API"
-  spec.description   = "Gem created for Ingenium Schools to interface witht he MasteryConnect API"
+  spec.description   = "Gem created to convert MasteryConnect API endpoints to CSV"
   spec.homepage      = "http://silassao.com"
   spec.license       = "MIT"
 

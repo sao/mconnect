@@ -5,59 +5,55 @@ require 'yaml'
 require 'json'
 require 'csv'
 
-require 'mconnect/helpers'
 require 'mconnect/worker'
 require 'mconnect/decorator'
 require 'mconnect/generator'
 require 'mconnect/authorizer'
-require 'mconnect/verifier'
 
 module Mconnect
   class CLI < Thor
-    MISSING_CONFIG_MESSAGE = "Missing config file. Please run 'config' first."
+    include Thor::Actions
 
-    desc "config", "create a new configuration yaml (/tmp/mconnect.yml)"
+    desc "config", "create a new configuration yaml"
     def config options = {}
-      puts "Let's setup a configuration file.."
+      say "Let's setup a configuration file.."
 
-      write_option 'What is the consumer key?', 'consumer_key', options
-      write_option 'What is the consumer secret?', 'consumer_secret', options
+      options['consumer_key']    = ask('What is the consumer key?').to_s
+      options['consumer_secret'] = ask('What is the consumer secret?').to_s
 
-      save_to_yaml options, '/tmp/mconnect.yml'
+      create_file '/tmp/mconnect/config.yml' do
+        options.to_yaml
+      end
     end
 
-    desc "auth", "authorize client and create authorization yaml (/tmp/mconnect_authorization.yml)"
+    desc "auth", "authorize client and create authorization yaml"
     def auth
-      begin
-        authorizer    = Mconnect::Authorizer.new.client
-        request_token = authorizer.get_request_token
+      say 'Copy and paste the following URL in your browser:'
+      say "\t#{authorizer.authorize_url}"
 
-        verifier      = Mconnect::Verifier.new request_token
-        save_to_yaml verifier.authorization, '/tmp/mconnect_authorization.yml'
-      rescue
-        puts MISSING_CONFIG_MESSAGE
+      authorizer.verifier = ask('When you sign in, copy and paste the oauth verifier here:').to_s
+
+      create_file '/tmp/mconnect/authorization.yml' do
+        authorizer.authorization.to_yaml
       end
     end
 
     desc "get", "gets endpoint and saves to CSV"
-    option :e, required: true
-    option :o, required: true
+    option :e, required: true, desc: "which endpoint to export"
+    option :o, required: true, desc: "destination to put CSV"
     def get
-      begin
-        filename     = options[:o].to_s
-        endpoint     = options[:e]
-        authorizer   = Mconnect::Authorizer.new
-        worker       = Mconnect::Worker.new authorizer.client, authorizer.access_token, endpoint
-        generator    = Mconnect::Generator.new(worker.get_content, filename, endpoint)
+      filename   = options[:o].to_s
+      endpoint   = options[:e].to_s
+      worker     = Mconnect::Worker.new authorizer.access_token, endpoint
+      generator  = Mconnect::Generator.new(worker.content, filename, endpoint)
 
-        generator.save_csv
-      rescue
-        puts MISSING_CONFIG_MESSAGE
-      end
+      generator.save_csv
     end
 
     no_commands {
-      include Helpers
+      def authorizer
+        Mconnect::Authorizer.new
+      end
     }
   end
 end

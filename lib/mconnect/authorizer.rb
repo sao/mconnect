@@ -1,28 +1,41 @@
+require 'mconnect/helpers'
+
 module Mconnect
   class Authorizer
     include Helpers
 
-    attr_reader :oauth_options, :client_options
+    attr_writer :verifier
+    attr_reader :client
 
     def initialize
-      @oauth_options  = load_yaml '/tmp/mconnect.yml'
-      @client_options = { :site => 'https://api.masteryconnect.com',
-                          :authorize_path => '/oauth/authorize',
-                          :request_token_path => '/oauth/request_token',
-                          :access_token_path => '/oauth/access_token' }
+      oauth_options  = load_yaml '/tmp/mconnect/config.yml'
+      client_options = { :site => 'https://api.masteryconnect.com',
+                         :authorize_path => '/oauth/authorize',
+                         :request_token_path => '/oauth/request_token',
+                         :access_token_path => '/oauth/access_token' }
+
+      @client = OAuth::Consumer.new(
+                  oauth_options['consumer_key'],
+                  oauth_options['consumer_secret'],
+                  client_options
+                )
     end
 
     def access_token
-      access_token = load_yaml '/tmp/mconnect_authorization.yml'
+      access_token = load_yaml '/tmp/mconnect/authorization.yml'
       OAuth::AccessToken.new(client, access_token.token, access_token.secret)
     end
 
-    def client
-      OAuth::Consumer.new(
-        oauth_options['consumer_key'],
-        oauth_options['consumer_secret'],
-        client_options
-      )
+    def request_token
+      @request_token ||= client.get_request_token
+    end
+
+    def authorize_url
+      request_token.authorize_url
+    end
+
+    def authorization
+      request_token.get_access_token(oauth_verifier: @verifier)
     end
   end
 end
