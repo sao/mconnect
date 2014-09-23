@@ -28,6 +28,8 @@ module Mconnect
 
     desc "auth", "authorize client and create authorization yaml"
     def auth
+      authorizer = Mconnect::Authorizer.new
+
       say 'Copy and paste the following URL in your browser:'
       say "\t#{authorizer.authorize_url}"
 
@@ -44,17 +46,12 @@ module Mconnect
     def get
       filename   = options[:o].to_s
       endpoint   = options[:e].to_s
+      authorizer = Mconnect::Authorizer.new
       worker     = Mconnect::Worker.new authorizer.access_token, endpoint
       generator  = Mconnect::Generator.new(worker.content, filename, endpoint)
 
       generator.save_csv
     end
-
-    no_commands {
-      def authorizer
-        Mconnect::Authorizer.new
-      end
-    }
   end
 end
 
