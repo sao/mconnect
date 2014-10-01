@@ -1,4 +1,3 @@
-require 'pry'
 module Mconnect
   class Generator
     attr_accessor :content
