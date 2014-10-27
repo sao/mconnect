@@ -10,7 +10,7 @@ module Mconnect
     end
 
     def save_csv
-      decorator = Mconnect::Decorator.new @content
+      decorator = Mconnect::Decorator.new content
 
       case endpoint
       when "teachers"
@@ -23,8 +23,8 @@ module Mconnect
         content = decorator.sections_hash
       end
 
-      CSV.open("#{@directory}/#{@endpoint}.csv", "w", write_headers: true, headers: @content.first.keys) do |csv|
-        @content.each do |hash|
+      CSV.open("#{directory}/#{endpoint}.csv", "w", write_headers: true, headers: content.first.keys) do |csv|
+        content.each do |hash|
           csv << hash.values
         end
       end

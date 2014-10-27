@@ -7,7 +7,7 @@ module Mconnect
     end
 
     def remove_columns columns = []
-      @content.each do |hash|
+      content.each do |hash|
         hash.reject! do |k,v|
           columns.include? k
         end
@@ -15,24 +15,24 @@ module Mconnect
     end
 
     def flatten_column column
-      orig_content = @content.dup
-      @content = []
+      orig_content = content.dup
+      content = []
 
       orig_content.each do |hash|
-        @content << hash[column]
+        content << hash[column]
       end
 
-      @content.flatten!
+      content.flatten!
     end
 
     def sections_hash
-      orig_content = @content.dup
-      @content = []
+      orig_content = content.dup
+      content = []
 
       orig_content.each do |hash|
         hash['teachers'].each do |t|
           hash['students'].each do |s|
-            @content << {
+            content << {
               "id"                 => hash['id'],
               "school_id"          => hash['school_id'],
               "name"               => hash['name'],
@@ -52,7 +52,7 @@ module Mconnect
         end
       end
 
-      return @content
+      return content
     end
   end
 end
