@@ -1,13 +1,11 @@
 module Mconnect
   class Decorator
-    attr_accessor :content
-
     def initialize content
       @content = content
     end
 
     def remove_columns columns = []
-      content.each do |hash|
+      @content.each do |hash|
         hash.reject! do |k,v|
           columns.include? k
         end
@@ -15,7 +13,7 @@ module Mconnect
     end
 
     def flatten_column column
-      orig_content = content.dup
+      orig_content = @content.dup
       content = []
 
       orig_content.each do |hash|
@@ -26,7 +24,7 @@ module Mconnect
     end
 
     def sections_hash
-      orig_content = content.dup
+      orig_content = @content.dup
       content = []
 
       orig_content.each do |hash|

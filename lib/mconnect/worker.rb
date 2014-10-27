@@ -1,6 +1,6 @@
 module Mconnect
   class Worker
-    attr_accessor :content
+    attr_reader :content
 
     def initialize access_token, endpoint
       @access_token   = access_token

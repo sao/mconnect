@@ -5,7 +5,6 @@ module Mconnect
     include Helpers
 
     attr_writer :verifier
-    attr_reader :client
 
     def initialize
       oauth_options  = load_yaml '/tmp/mconnect/config.yml'
@@ -23,11 +22,11 @@ module Mconnect
 
     def access_token
       access_token = load_yaml '/tmp/mconnect/authorization.yml'
-      OAuth::AccessToken.new(client, access_token.token, access_token.secret)
+      OAuth::AccessToken.new(@client, access_token.token, access_token.secret)
     end
 
     def request_token
-      @request_token ||= client.get_request_token
+      @request_token ||= @client.get_request_token
     end
 
     def authorize_url
