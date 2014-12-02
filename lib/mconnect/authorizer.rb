@@ -7,7 +7,7 @@ module Mconnect
     attr_writer :verifier
 
     def initialize
-      oauth_options  = load_yaml '/tmp/mconnect/config.yml'
+      oauth_options  = load_yaml "#{Dir.home}/.mconnect/config.yml"
       client_options = { :site => 'https://api.masteryconnect.com',
                          :authorize_path => '/oauth/authorize',
                          :request_token_path => '/oauth/request_token',
@@ -21,7 +21,7 @@ module Mconnect
     end
 
     def access_token
-      access_token = load_yaml '/tmp/mconnect/authorization.yml'
+      access_token = load_yaml "#{Dir.home}/.mconnect/authorization.yml"
       OAuth::AccessToken.new(@client, access_token.token, access_token.secret)
     end
 

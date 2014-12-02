@@ -21,7 +21,7 @@ module Mconnect
       options['consumer_key']    = ask('What is the consumer key?').to_s
       options['consumer_secret'] = ask('What is the consumer secret?').to_s
 
-      create_file '/tmp/mconnect/config.yml' do
+      create_file "#{Dir.home}/.mconnect/config.yml" do
         options.to_yaml
       end
     end
@@ -35,7 +35,7 @@ module Mconnect
 
       authorizer.verifier = ask('When you sign in, copy and paste the oauth verifier here:').to_s
 
-      create_file '/tmp/mconnect/authorization.yml' do
+      create_file "#{Dir.home}/.mconnect/authorization.yml" do
         authorizer.authorization.to_yaml
       end
     end
