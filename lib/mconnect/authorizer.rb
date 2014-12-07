@@ -8,7 +8,7 @@ module Mconnect
 
     def initialize
       oauth_options  = load_yaml "#{Dir.home}/.mconnect/config.yml"
-      client_options = { :site => 'https://api.masteryconnect.com',
+      client_options = { :site => oauth_options['site'],
                          :authorize_path => '/oauth/authorize',
                          :request_token_path => '/oauth/request_token',
                          :access_token_path => '/oauth/access_token' }
