@@ -15,14 +15,16 @@ module Mconnect
     include Thor::Actions
 
     desc "config", "create a new configuration yaml"
-    def config options = {}
+    option :site, default: "https://api.masteryconnect.com", desc: "MasteryConnect API URL"
+    def config user_input={}
       say "Let's setup a configuration file.."
 
-      options['consumer_key']    = ask('What is the consumer key?').to_s
-      options['consumer_secret'] = ask('What is the consumer secret?').to_s
+      user_input['consumer_key']    = ask('What is the consumer key?').to_s
+      user_input['consumer_secret'] = ask('What is the consumer secret?').to_s
+      user_input['site'] = ask('What is the MasteryConnect API URL?', default: options[:site])
 
       create_file "#{Dir.home}/.mconnect/config.yml" do
-        options.to_yaml
+        user_input.to_yaml
       end
     end
 
